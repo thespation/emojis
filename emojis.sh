@@ -9,10 +9,11 @@ VERD="\033[0;32m"	#Deixa a saída na cor verde
 CIAN="\033[0;36m"	#Deixa a saída na cor ciano
 NORM="\033[0m"		#Volta para a cor padrão
 # Alias de instalação
-SUDD='sudo apt install'					#Base Debian
-SUDF='sudo dnf install -y' 				#Fedora
-APPD='fonts-noto-color-emoji'			#Pacote de ícones para base Debian
+SUDD='sudo apt install'			#Base Debian
+SUDF='sudo dnf install -y' 		#Fedora
+APPD='fonts-noto-color-emoji'		#Pacote de ícones para base Debian
 APPF='google-noto-emoji-color-fonts'	#Pacote de ícones para Fedora
+
 #Responsável por atualizar o sistema, instalar a base BSPWM e apps complementares
 ATUAS () { 
 	if [[ ${INXI} = *Debian* || *Ubuntu* || *Pop* ]]; then #Testa se é base Debian
@@ -29,6 +30,7 @@ ATUAS () {
 			echo -e "${VERM}[!] Sistema não suportado\n" ${NORM}
 	fi
 }
+
 #Responsável por criar arquivos de configurações e atualizar o cache das fontes
 CONF () {
 	if [[ ! -f ~/.config/fontconfig/fonts.conf ]]; then #verifica se já existe o arquivo
