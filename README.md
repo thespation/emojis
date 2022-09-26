@@ -25,4 +25,5 @@ curl -s https://raw.githubusercontent.com/thespation/emojis/main/emojis.sh | bas
 ## Motivação
 A ideia é automatizar o processo de instalação detalhado no link abaixo
 
-https://diolinux.com.br/tutoriais/resolvendo-o-bug-dos-emojis.html
+  
+#### [Diolinux - Resolvendo o bug dos emojis nos navegadores no Linux](https://diolinux.com.br/tutoriais/resolvendo-o-bug-dos-emojis.html)
