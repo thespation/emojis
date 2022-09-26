@@ -8,7 +8,7 @@ Instalando e configurando a fonte de exibição de **emojis** em sua distribuiç
 ## Pré-requisito
 Sistemas suportados:
 > * Debian;
-> * Ubuntu (Kubuntu, Lubuntu Xubuntu);
+> * Ubuntu (Kubuntu, Lubuntu e Xubuntu);
 > * Pop!_OS;
 > * Fedora.
 
