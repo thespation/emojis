@@ -13,6 +13,7 @@ SUDD='sudo apt install'			#Base Debian
 SUDF='sudo dnf install -y' 		#Fedora
 APPD='fonts-noto-color-emoji'		#Pacote de ícones para base Debian
 APPF='google-noto-emoji-color-fonts'	#Pacote de ícones para Fedora
+INXI=`inxi -S`				#Obtem informações do sistema
 
 #Responsável por verificar qual sistema em uso
 ATUAS () { 
