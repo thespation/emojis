@@ -14,7 +14,7 @@ SUDF='sudo dnf install -y' 		#Fedora
 APPD='fonts-noto-color-emoji'		#Pacote de ícones para base Debian
 APPF='google-noto-emoji-color-fonts'	#Pacote de ícones para Fedora
 
-#Responsável por atualizar o sistema, instalar a base BSPWM e apps complementares
+#Responsável por verificar qual sistema em uso
 ATUAS () { 
 	if [[ ${INXI} = *Debian* || *Ubuntu* || *Pop* ]]; then #Testa se é base Debian
 			echo -e "${CIAN}[ ] Instalar pacote de fontes" ${NORM}
