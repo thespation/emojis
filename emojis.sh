@@ -44,7 +44,7 @@ CONF () {
 	elif  [[ -f ~/.config/fontconfig/fonts.conf ]]; then
 		echo -e "\n${CIAN}[ ] Arquivo já está na pasta, não foi substituído" ${NORM}
 	else
-		echo -e "\n${CIAN}[!] Não foi possível copiar o arquivo" ${NORM}
+		echo -e "\n${CIAN}[!] Não foi possível criar o arquivo" ${NORM}
 	fi
 }
 
