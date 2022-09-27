@@ -13,16 +13,16 @@ SUDD='sudo apt install'			#Base Debian
 SUDF='sudo dnf install -y' 		#Fedora
 APPD='fonts-noto-color-emoji'		#Pacote de ícones para base Debian
 APPF='google-noto-emoji-color-fonts'	#Pacote de ícones para Fedora
-INXI=`inxi -S`				#Obtem informações do sistema
+ID=`lsb_release -i`			#Obtem informações do sistema
 
 #Responsável por verificar qual sistema em uso
 ATUAS () { 
-	if [[ ${INXI} = *Debian* || *Ubuntu* || *Pop* ]]; then #Testa se é base Debian
+	if [[ $ID = *Debian* || $ID = *Ubuntu* || $ID = *Pop* ]]; then #Testa se é base Debian
 			echo -e "${CIAN}[ ] Instalar pacote de fontes" ${NORM}
 				${SUDD} ${APPD} -y &&
 			echo -e "${VERD}[*] Pacote de fontes instalado com sucesso" ${NORM} &&
 			CONF
-	elif [[ ${INXI} = *Fedora* ]]; then
+	elif [[ $ID = *Fedora* ]]; then
 			echo -e "${CIAN}[ ] Instalar pacote de fontes" ${NORM}
 				${SUDF} -y ${APPF} &&
 			echo -e "${VERD}[*] Pacote de fontes instalado com sucesso" ${NORM} &&
