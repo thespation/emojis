@@ -43,7 +43,7 @@ CONF () {
 		echo -e "${VERD}[*] Arquivo criado com sucesso" ${NORM}
 		echo -e "\n${CIAN}[ ] Pode ser necessário sair e voltar a sessão" ${NORM}
 	elif  [[ -f ~/.config/fontconfig/fonts.conf ]]; then
-		echo -e "\n${CIAN}[ ] Arquivo já está na pasta, não foi substituído" ${NORM}
+		echo -e "\n${CIAN}[ ] Arquivo de configuração já está na pasta, não foi substituído" ${NORM}
 	else
 		echo -e "\n${VERM}[!] Não foi possível criar o arquivo" ${NORM}
 	fi
