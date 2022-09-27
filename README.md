@@ -13,7 +13,7 @@ Sistemas suportados:
 > * Fedora.
 
 Para rodar o comando de instalação com sucesso, é necessário ter instalado em seu sistema:
-> `curl``
+> `curl`
 
 ## Instalação
 Em seu terminal, rode o comando abaixo:
