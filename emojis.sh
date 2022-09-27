@@ -20,12 +20,12 @@ ATUAS () {
 	if [[ ${INXI} = *Debian* || *Ubuntu* || *Pop* ]]; then #Testa se é base Debian
 			echo -e "${CIAN}[ ] Instalar pacote de fontes" ${NORM}
 				${SUDD} ${APPD} -y &&
-			echo -e "${VERD}[*] Pacote de ícones instalado com sucesso" ${NORM} &&
+			echo -e "${VERD}[*] Pacote de fontes instalado com sucesso" ${NORM} &&
 			CONF
 	elif [[ ${INXI} = *Fedora* ]]; then
 			echo -e "${CIAN}[ ] Instalar pacote de fontes" ${NORM}
 				${SUDF} -y ${APPF} &&
-			echo -e "${VERD}[*] Pacote de ícones instalado com sucesso" ${NORM} &&
+			echo -e "${VERD}[*] Pacote de fontes instalado com sucesso" ${NORM} &&
 			CONF
 	else
 			echo -e "${VERM}[!] Sistema não suportado\n" ${NORM}
