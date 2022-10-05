@@ -18,17 +18,17 @@ ID=`lsb_release -i`			#Obtem informações do sistema
 #Responsável por verificar qual sistema em uso
 ATUAS () { 
 	if [[ $ID = *Debian* || $ID = *Ubuntu* || $ID = *Pop* ]]; then #Testa se é base Debian
-			ICOINSD
+		ICOINSD
 	elif [[ $ID = *Fedora* ]]; then
-			ICOINSF
+		ICOINSF
 	else
-			echo -e "${VERM}[!] Sistema não suportado\n" ${NORM}
+		echo -e "${VERM}[!] Sistema não suportado\n" ${NORM}
 	fi
 }
 
 #Verifica se pacote de ícones está instalado na base Debian
 ICOINSD () {
-	if which ${APPD} &> /dev/null; then
+	if [[ -f /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf ]]; then
 		echo -e "${VERD}[*] Pacote de fontes já consta no sistema" ${NORM}
 		CONF
 	else
@@ -41,7 +41,7 @@ fi
 
 #Verifica se pacote de ícones está instalado no Fedpra
 ICOINSF () {
-	if which ${APPF} &> /dev/null; then
+	if [[ -f /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf ]]; then
 		echo -e "${VERD}[*] Pacote de fontes já consta no sistema" ${NORM}
 		CONF
 	else
