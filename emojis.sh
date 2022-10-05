@@ -18,18 +18,38 @@ ID=`lsb_release -i`			#Obtem informações do sistema
 #Responsável por verificar qual sistema em uso
 ATUAS () { 
 	if [[ $ID = *Debian* || $ID = *Ubuntu* || $ID = *Pop* ]]; then #Testa se é base Debian
-			echo -e "${CIAN}[ ] Instalar pacote de fontes" ${NORM}
-				${SUDD} ${APPD} -y &&
-			echo -e "${VERD}[*] Pacote de fontes instalado com sucesso" ${NORM} &&
-			CONF
+			ICOINSD
 	elif [[ $ID = *Fedora* ]]; then
-			echo -e "${CIAN}[ ] Instalar pacote de fontes" ${NORM}
-				${SUDF} -y ${APPF} &&
-			echo -e "${VERD}[*] Pacote de fontes instalado com sucesso" ${NORM} &&
-			CONF
+			ICOINSF
 	else
 			echo -e "${VERM}[!] Sistema não suportado\n" ${NORM}
 	fi
+}
+
+#Verifica se pacote de ícones está instalado na base Debian
+ICOINSD () {
+	if which ${APPD} &> /dev/null; then
+		echo -e "${VERD}[*] Pacote de fontes já consta no sistema" ${NORM}
+		CONF
+	else
+		echo -e "${CIAN}[ ] Instalar pacote de fontes" ${NORM}
+			${SUDD} ${APPD} -y
+		echo -e "${VERD}[*] Pacote de fontes instalado com sucesso" ${NORM}
+		CONF
+fi
+}
+
+#Verifica se pacote de ícones está instalado no Fedpra
+ICOINSF () {
+	if which ${APPF} &> /dev/null; then
+		echo -e "${VERD}[*] Pacote de fontes já consta no sistema" ${NORM}
+		CONF
+	else
+		echo -e "${CIAN}[ ] Instalar pacote de fontes" ${NORM}
+			${SUDF} -y ${APPF}
+		echo -e "${VERD}[*] Pacote de fontes instalado com sucesso" ${NORM}
+		CONF
+fi
 }
 
 #Responsável por criar arquivos de configurações e atualizar o cache das fontes
