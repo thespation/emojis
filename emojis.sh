@@ -29,7 +29,7 @@ ATUAS () {
 #Verifica se pacote de ícones está instalado na base Debian
 ICOINSD () {
 	if [[ -f /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf ]]; then
-		echo -e "${VERD}[*] Pacote de fontes já consta no sistema" ${NORM}
+		echo -e "${CIAN}[ ] Pacote de fontes já consta no sistema" ${NORM}
 		CONF
 	else
 		echo -e "${CIAN}[ ] Instalar pacote de fontes" ${NORM}
@@ -42,7 +42,7 @@ fi
 #Verifica se pacote de ícones está instalado no Fedpra
 ICOINSF () {
 	if [[ -f /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf ]]; then
-		echo -e "${VERD}[*] Pacote de fontes já consta no sistema" ${NORM}
+		echo -e "${CIAN}[ ] Pacote de fontes já consta no sistema" ${NORM}
 		CONF
 	else
 		echo -e "${CIAN}[ ] Instalar pacote de fontes" ${NORM}
@@ -63,9 +63,9 @@ CONF () {
 		echo -e "${VERD}[*] Arquivo criado com sucesso" ${NORM}
 		echo -e "\n${CIAN}[ ] Pode ser necessário sair e voltar a sessão" ${NORM}
 	elif  [[ -f ~/.config/fontconfig/fonts.conf ]]; then
-		echo -e "\n${CIAN}[ ] Arquivo de configuração já está na pasta, não foi substituído" ${NORM}
+		echo -e "${CIAN}[ ] Arquivo de configuração já está na pasta, não foi substituído" ${NORM}
 	else
-		echo -e "\n${VERM}[!] Não foi possível criar o arquivo" ${NORM}
+		echo -e "${VERM}[!] Não foi possível criar o arquivo" ${NORM}
 	fi
 }
 
