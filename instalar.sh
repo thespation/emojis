@@ -34,7 +34,6 @@ verificar_lsb_release() {
             exit 1
         fi
         echo -e "${VERD}[*] lsb_release instalado com sucesso!${NORM}"
-    else
     fi
 }
 
