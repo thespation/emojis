@@ -70,8 +70,8 @@ ICOINSA() { INSTALAR "$SUDA" "$APPA"; }
 # Configuração de fontes
 CONF() {
     if [[ ! -f $CONFIG_PATH ]]; then
-        echo -e "${CIAN}[ ] Criando arquivo de configuração...${NORM}"
-        mkdir -p ~/.config/fontconfig/ &&
+        echo -e "${CIAN}[ ] Criando diretório e arquivo de configuração...${NORM}"
+        mkdir -p ~/.config/fontconfig/  # Garante que o diretório exista
         cat <<EOF > $CONFIG_PATH
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
@@ -95,12 +95,11 @@ CONF() {
 </fontconfig>
 EOF
         fc-cache -f
-        echo -e "${VERD}[*] Configuração concluída${NORM}"
+        echo -e "${VERD}[*] Configuração criada com sucesso${NORM}"
     else
-        echo -e "${CIAN}[ ] Configuração já existente${NORM}"
+        echo -e "${CIAN}[ ] Configuração já existente, nada foi alterado.${NORM}"
     fi
 }
-
 # Início
 clear
 verificar_lsb_release
