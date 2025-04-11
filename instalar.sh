@@ -67,15 +67,15 @@ ICOINSA() { INSTALAR "$SUDA" "$APPA"; }
 # Configuração de fontes
 CONF() {
     if [[ ! -f $CONFIG_PATH ]]; then
-        echo -e "${CIAN}------ Criando diretório e arquivo de configuração ------${NORM}"
+        echo -e "\n${CIAN}------ Criando diretório e arquivo de configuração ------${NORM}"
         mkdir -p "$(dirname "$CONFIG_PATH")"  # Garante que o diretório exista
         echo -e '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n<fontconfig>\n
 <!-- ## serif ## -->\n  <alias>\n               <family>serif</family>\n                <prefer>\n                      <family>Noto Serif</family>\n                     <family>emoji</family>\n                        <family>Liberation Serif</family>\n
         <family>Nimbus Roman</family>\n                 <family>DejaVu Serif</family>\n         </prefer>\n     </alias>\n      <!-- ## sans-serif ## -->\n       <alias>\n               <family>sans-serif</family>\n           <prefer>\n                      <family>Noto Sans</family>\n                      <family>emoji</family>\n                        <family>Liberation Sans</family>\n                        <family>Nimbus Sans</family>\n                  <family>DejaVu Sans</family>\n          </prefer>\n     </alias>\n</fontconfig>' > "$CONFIG_PATH"
         fc-cache -f
-        echo -e "${VERD}[*] Configuração criada com sucesso${NORM}"
+        echo -e "${VERD}[*] Configuração criada com sucesso${NORM}\n"
     else
-        echo -e "${CIAN}[i] Configuração já existente, nada foi alterado.${NORM}"
+        echo -e "${CIAN}[i] Configuração já existente, nada foi alterado.${NORM}\n"
     fi
 }
 
