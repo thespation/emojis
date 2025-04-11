@@ -16,12 +16,29 @@ SUDA='sudo pacman -S --noconfirm'
 APPD='fonts-noto-color-emoji'
 APPF='google-noto-emoji-color-fonts'
 APPA='noto-fonts-emoji'
+LSBRELEASE='lsb-release'               # Pacote para lsb_release
 FONT_PATH='/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf'
 CONFIG_PATH='~/.config/fontconfig/fonts.conf'
 
 # Verificação de Dependências
-command -v lsb_release >/dev/null 2>&1 || { echo -e "${VERM}lsb_release não encontrado, instale antes de executar.${NORM}"; exit 1; }
-command -v sudo >/dev/null 2>&1 || { echo -e "${VERM}sudo não encontrado, instale antes de executar.${NORM}"; exit 1; }
+verificar_lsb_release() {
+    if ! command -v lsb_release &>/dev/null; then
+        echo -e "${CIAN}[ ] lsb_release não encontrado. Instalando...${NORM}"
+        if [[ -f /etc/debian_version ]]; then
+            sudo apt update && $SUDD $LSBRELEASE
+        elif [[ -f /etc/redhat-release ]]; then
+            $SUDF $LSBRELEASE
+        elif [[ -f /etc/arch-release ]]; then
+            $SUDA $LSBRELEASE
+        else
+            echo -e "${VERM}[!] Sistema não suportado para instalação do lsb_release${NORM}"
+            exit 1
+        fi
+        echo -e "${VERD}[*] lsb_release instalado com sucesso!${NORM}"
+    else
+        echo -e "${VERD}[ ] lsb_release já está instalado.${NORM}"
+    fi
+}
 
 # Função principal
 ATUAS() {
@@ -86,5 +103,6 @@ EOF
 
 # Início
 clear
+verificar_lsb_release
 ID=$(lsb_release -i)
 ATUAS
