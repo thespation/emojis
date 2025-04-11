@@ -16,20 +16,19 @@ SUDA='sudo pacman -S --noconfirm --needed'
 APPD='fonts-noto-color-emoji'
 APPF='google-noto-emoji-color-fonts'
 APPA='noto-fonts-emoji'
-LSBRELEASE='lsb-release'               # Pacote para lsb_release
 FONT_PATH='/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf'
-CONFIG_PATH='~/.config/fontconfig/fonts.conf'
+CONFIG_PATH="/home/$USER/.config/fontconfig/fonts.conf"
 
 # Verificação de Dependências
 verificar_lsb_release() {
     if ! command -v lsb_release &>/dev/null; then
         echo -e "${CIAN}[ ] lsb_release não encontrado. Instalando...${NORM}"
         if [[ -f /etc/debian_version ]]; then
-            sudo apt update && $SUDD $LSBRELEASE
+            sudo apt update && $SUDD lsb-release
         elif [[ -f /etc/redhat-release ]]; then
-            $SUDF $LSBRELEASE
+            $SUDF redhat-lsb
         elif [[ -f /etc/arch-release ]]; then
-            $SUDA $LSBRELEASE
+            $SUDA lsb-release
         else
             echo -e "${VERM}[!] Sistema não suportado para instalação do lsb_release${NORM}"
             exit 1
@@ -71,35 +70,17 @@ ICOINSA() { INSTALAR "$SUDA" "$APPA"; }
 CONF() {
     if [[ ! -f $CONFIG_PATH ]]; then
         echo -e "${CIAN}[ ] Criando diretório e arquivo de configuração...${NORM}"
-        mkdir -p ~/.config/fontconfig/  # Garante que o diretório exista
-        cat <<EOF > $CONFIG_PATH
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-<fontconfig>
-    <alias>
-        <family>serif</family>
-        <prefer>
-            <family>Noto Serif</family>
-            <family>emoji</family>
-            <family>Liberation Serif</family>
-        </prefer>
-    </alias>
-    <alias>
-        <family>sans-serif</family>
-        <prefer>
-            <family>Noto Sans</family>
-            <family>emoji</family>
-            <family>Liberation Sans</family>
-        </prefer>
-    </alias>
-</fontconfig>
-EOF
+        mkdir -p "$(dirname "$CONFIG_PATH")"  # Garante que o diretório exista
+        echo -e '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n<fontconfig>\n
+<!-- ## serif ## -->\n  <alias>\n               <family>serif</family>\n                <prefer>\n                      <family>Noto Serif</family>\n                     <family>emoji</family>\n                        <family>Liberation Serif</family>\n
+        <family>Nimbus Roman</family>\n                 <family>DejaVu Serif</family>\n         </prefer>\n     </alias>\n      <!-- ## sans-serif ## -->\n       <alias>\n               <family>sans-serif</family>\n           <prefer>\n                      <family>Noto Sans</family>\n                      <family>emoji</family>\n                        <family>Liberation Sans</family>\n                        <family>Nimbus Sans</family>\n                  <family>DejaVu Sans</family>\n          </prefer>\n     </alias>\n</fontconfig>' > "$CONFIG_PATH"
         fc-cache -f
         echo -e "${VERD}[*] Configuração criada com sucesso${NORM}"
     else
         echo -e "${CIAN}[ ] Configuração já existente, nada foi alterado.${NORM}"
     fi
 }
+
 # Início
 clear
 verificar_lsb_release
