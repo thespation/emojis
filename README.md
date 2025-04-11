@@ -19,7 +19,7 @@ Para rodar o comando de instalação com sucesso, é necessário ter instalado e
 Em seu terminal, rode o comando abaixo:
 
 ```
-curl -s https://raw.githubusercontent.com/thespation/emojis/main/emojis.sh | bash
+curl -s https://raw.githubusercontent.com/thespation/emojis/main/instalar.sh | bash
 ```
 
 ## Motivação
