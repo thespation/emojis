@@ -12,7 +12,7 @@ NORM="\033[0m"      # Padrão
 # Alias e variáveis
 SUDD='sudo apt install -y'
 SUDF='sudo dnf install -y'
-SUDA='sudo pacman -S --noconfirm'
+SUDA='sudo pacman -S --noconfirm --needed'
 APPD='fonts-noto-color-emoji'
 APPF='google-noto-emoji-color-fonts'
 APPA='noto-fonts-emoji'
