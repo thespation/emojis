@@ -35,7 +35,6 @@ verificar_lsb_release() {
         fi
         echo -e "${VERD}[*] lsb_release instalado com sucesso!${NORM}"
     else
-        echo -e "${VERD}[ ] lsb_release já está instalado.${NORM}"
     fi
 }
 
@@ -53,11 +52,11 @@ ATUAS() {
 INSTALAR() {
     local SU=$1 APP=$2
     if [[ -f $FONT_PATH ]]; then
-        echo -e "${CIAN}[ ] Fontes já instaladas${NORM}"
+        echo -e "${CIAN}[i] Fonte já instalada${NORM}"
     else
-        echo -e "${CIAN}[ ] Instalando fontes...${NORM}"
+        echo -e "${CIAN}------ Instalando fonte ------${NORM}"
         $SU $APP
-        echo -e "${VERD}[*] Fontes instaladas com sucesso${NORM}"
+        echo -e "${VERD}[*] Fonte instalada com sucesso${NORM}"
     fi
     CONF
 }
@@ -69,7 +68,7 @@ ICOINSA() { INSTALAR "$SUDA" "$APPA"; }
 # Configuração de fontes
 CONF() {
     if [[ ! -f $CONFIG_PATH ]]; then
-        echo -e "${CIAN}[ ] Criando diretório e arquivo de configuração...${NORM}"
+        echo -e "${CIAN}------ Criando diretório e arquivo de configuração ------${NORM}"
         mkdir -p "$(dirname "$CONFIG_PATH")"  # Garante que o diretório exista
         echo -e '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n<fontconfig>\n
 <!-- ## serif ## -->\n  <alias>\n               <family>serif</family>\n                <prefer>\n                      <family>Noto Serif</family>\n                     <family>emoji</family>\n                        <family>Liberation Serif</family>\n
@@ -77,7 +76,7 @@ CONF() {
         fc-cache -f
         echo -e "${VERD}[*] Configuração criada com sucesso${NORM}"
     else
-        echo -e "${CIAN}[ ] Configuração já existente, nada foi alterado.${NORM}"
+        echo -e "${CIAN}[i] Configuração já existente, nada foi alterado.${NORM}"
     fi
 }
 
