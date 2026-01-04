@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
-
-# Desenvolvido por William Santos
-# contato: thespation@gmail.com ou https://github.com/thespation
+set -euo pipefail
 
 # Cores
-VERM="\033[1;31m"   # Vermelho
-VERD="\033[0;32m"   # Verde
-CIAN="\033[0;36m"   # Ciano
-NORM="\033[0m"      # Padrão
+VERM="\033[1;31m"
+VERD="\033[0;32m"
+CIAN="\033[0;36m"
+NORM="\033[0m"
 
 # Alias e variáveis
 SUDD='sudo apt install -y'
@@ -17,9 +15,15 @@ APPD='fonts-noto-color-emoji'
 APPF='google-noto-emoji-color-fonts'
 APPA='noto-fonts-emoji'
 FONT_PATH='/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf'
-CONFIG_PATH="/home/$USER/.config/fontconfig/fonts.conf"
+CONFIG_PATH="$HOME/.config/fontconfig/fonts.conf"
 
-# Verificação de Dependências
+# Verificação de sudo
+if ! command -v sudo &>/dev/null; then
+    echo -e "${VERM}[!] O comando sudo não está disponível.${NORM}"
+    exit 1
+fi
+
+# Verificação de lsb_release
 verificar_lsb_release() {
     if ! command -v lsb_release &>/dev/null; then
         echo -e "${CIAN}[ ] lsb_release não encontrado. Instalando...${NORM}"
@@ -30,25 +34,15 @@ verificar_lsb_release() {
         elif [[ -f /etc/arch-release ]]; then
             $SUDA lsb-release
         else
-            echo -e "${VERM}[!] Sistema não suportado para instalação do lsb_release${NORM}"
+            echo -e "${VERM}[!] Sistema não suportado${NORM}"
             exit 1
         fi
         echo -e "${VERD}[*] lsb_release instalado com sucesso!${NORM}"
     fi
 }
 
-# Função principal
-ATUAS() {
-    case "$ID" in
-        *Debian*|*Ubuntu*|*Pop*) ICOINSD ;;
-        *Fedora*) ICOINSF ;;
-        *Arch*) ICOINSA ;;
-        *) echo -e "${VERM}[!] Sistema não suportado${NORM}" ;;
-    esac
-}
-
 # Funções de instalação
-INSTALAR() {
+instalar() {
     local SU=$1 APP=$2
     if [[ -f $FONT_PATH ]]; then
         echo -e "${CIAN}[i] Fonte já instalada${NORM}"
@@ -57,30 +51,60 @@ INSTALAR() {
         $SU $APP
         echo -e "${VERD}[*] Fonte instalada com sucesso${NORM}"
     fi
-    CONF
+    configurar_fontes
 }
 
-ICOINSD() { INSTALAR "$SUDD" "$APPD"; }
-ICOINSF() { INSTALAR "$SUDF" "$APPF"; }
-ICOINSA() { INSTALAR "$SUDA" "$APPA"; }
+instalar_debian() { instalar "$SUDD" "$APPD"; }
+instalar_fedora() { instalar "$SUDF" "$APPF"; }
+instalar_arch()   { instalar "$SUDA" "$APPA"; }
 
 # Configuração de fontes
-CONF() {
+configurar_fontes() {
     if [[ ! -f $CONFIG_PATH ]]; then
-        echo -e "\n${CIAN}------ Criando diretório e arquivo de configuração ------${NORM}"
-        mkdir -p "$(dirname "$CONFIG_PATH")"  # Garante que o diretório exista
-        echo -e '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n<fontconfig>\n
-<!-- ## serif ## -->\n  <alias>\n               <family>serif</family>\n                <prefer>\n                      <family>Noto Serif</family>\n                     <family>emoji</family>\n                        <family>Liberation Serif</family>\n
-        <family>Nimbus Roman</family>\n                 <family>DejaVu Serif</family>\n         </prefer>\n     </alias>\n      <!-- ## sans-serif ## -->\n       <alias>\n               <family>sans-serif</family>\n           <prefer>\n                      <family>Noto Sans</family>\n                      <family>emoji</family>\n                        <family>Liberation Sans</family>\n                        <family>Nimbus Sans</family>\n                  <family>DejaVu Sans</family>\n          </prefer>\n     </alias>\n</fontconfig>' > "$CONFIG_PATH"
+        echo -e "\n${CIAN}------ Criando configuração ------${NORM}"
+        mkdir -p "$(dirname "$CONFIG_PATH")"
+        cat > "$CONFIG_PATH" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <!-- serif -->
+  <alias>
+    <family>serif</family>
+    <prefer>
+      <family>Noto Serif</family>
+      <family>emoji</family>
+      <family>Liberation Serif</family>
+      <family>Nimbus Roman</family>
+      <family>DejaVu Serif</family>
+    </prefer>
+  </alias>
+  <!-- sans-serif -->
+  <alias>
+    <family>sans-serif</family>
+    <prefer>
+      <family>Noto Sans</family>
+      <family>emoji</family>
+      <family>Liberation Sans</family>
+      <family>Nimbus Sans</family>
+      <family>DejaVu Sans</family>
+    </prefer>
+  </alias>
+</fontconfig>
+EOF
         fc-cache -f
         echo -e "${VERD}[*] Configuração criada com sucesso${NORM}\n"
     else
-        echo -e "${CIAN}[i] Configuração já existente, nada foi alterado.${NORM}\n"
+        echo -e "${CIAN}[i] Configuração já existente.${NORM}\n"
     fi
 }
 
 # Início
 clear
 verificar_lsb_release
-ID=$(lsb_release -i)
-ATUAS
+ID=$(lsb_release -is)
+case "$ID" in
+    Debian|Ubuntu|Pop) instalar_debian ;;
+    Fedora) instalar_fedora ;;
+    Arch) instalar_arch ;;
+    *) echo -e "${VERM}[!] Sistema não suportado${NORM}" ;;
+esac
