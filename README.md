@@ -52,7 +52,7 @@ Clone o repositório e execute o script:
 Execute diretamente com curl:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/seu-usuario/seu-repositorio/main/instalar-emoji.sh | bash
+curl -fsSL https://raw.githubusercontent.com/thespation/emojis/refs/heads/main/instalar.sh | bash
 ```
 
 ---
