@@ -1,69 +1,140 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# ==============================================================================
+# instalar-emoji.sh — Instalação da fonte Noto Color Emoji
+# ==============================================================================
+# Compatível com: Debian/Ubuntu/Pop, Fedora, Arch
+# Variáveis de ambiente:
+#   DRY_RUN=1   Simula sem alterar o sistema
+# ==============================================================================
 
-# Cores
-VERM="\033[1;31m"
-VERD="\033[0;32m"
-CIAN="\033[0;36m"
-NORM="\033[0m"
+DRY_RUN="${DRY_RUN:-0}"
 
-# Alias e variáveis
-SUDD='sudo apt install -y'
-SUDF='sudo dnf install -y'
-SUDA='sudo pacman -S --noconfirm --needed'
-APPD='fonts-noto-color-emoji'
-APPF='google-noto-emoji-color-fonts'
-APPA='noto-fonts-emoji'
 FONT_PATH='/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf'
 CONFIG_PATH="$HOME/.config/fontconfig/fonts.conf"
 
-# Verificação de sudo
-if ! command -v sudo &>/dev/null; then
-    echo -e "${VERM}[!] O comando sudo não está disponível.${NORM}"
+# ==============================================================================
+# CORES
+# ==============================================================================
+if [[ -t 1 ]]; then
+    RESET=$'\033[0m'
+    VERDE=$'\033[0;32m'
+    AMARELO=$'\033[1;33m'
+    VERMELHO=$'\033[0;31m'
+    AZUL=$'\033[1;34m'
+    NEGRITO=$'\033[1m'
+else
+    RESET='' VERDE='' AMARELO='' VERMELHO='' AZUL='' NEGRITO=''
+fi
+
+ICO_OK="✔"; ICO_ERR="✖"; ICO_WARN="⚠"; ICO_SKIP="↷"; ICO_INFO="ℹ"; ICO_SETA="➜"
+
+log_ok()   { echo -e "${VERDE}  [${ICO_OK}]${RESET} $*"; }
+log_info() { echo -e "${AZUL}  [${ICO_INFO}]${RESET} $*"; }
+log_warn() { echo -e "${AMARELO}  [${ICO_WARN}]${RESET} $*"; }
+log_err()  { echo -e "${VERMELHO}  [${ICO_ERR}]${RESET} $*"; }
+log_skip() { echo -e "${AMARELO}  [${ICO_SKIP}]${RESET} $*"; }
+log_run()  { echo -e "${AZUL}  [${ICO_SETA}]${RESET} $*"; }
+separador(){ echo -e "  ──────────────────────────────────────────────"; }
+
+# ==============================================================================
+# BANNER
+# ==============================================================================
+clear
+echo -e "${VERDE}
+  ══════════════════════════════════════════════════════════
+  ┌─┐┌─┐┬─┐┬─┐┌─┐┌─┐┌─┐┌─┐  ┌┬┐┌─┐  ┌─┐┌┬┐┌─┐ ┬┬┌─┐
+  │  │ │├┬┘├┬┘├┤ │  ├─┤│ │   ││├┤   ├┤ ││││ │ ││└─┐
+  └─┘└─┘┴└─┴└─└─┘└─┘┴ ┴└─┘  ─┴┘└─┘  └─┘┴ ┴└─┘└┘┴└─┘
+  ══════════════════════════════════════════════════════════${RESET}"
+echo ""
+[[ "$DRY_RUN" == "1" ]] && log_skip "Modo DRY-RUN — nenhuma alteração será feita."
+echo ""
+
+# ==============================================================================
+# VERIFICAR SUDO
+# ==============================================================================
+if ! command -v sudo >/dev/null 2>&1; then
+    log_err "O comando 'sudo' não está disponível."
     exit 1
 fi
 
-# Verificação de lsb_release
-verificar_lsb_release() {
-    if ! command -v lsb_release &>/dev/null; then
-        echo -e "${CIAN}[ ] lsb_release não encontrado. Instalando...${NORM}"
-        if [[ -f /etc/debian_version ]]; then
-            sudo apt update && $SUDD lsb-release
-        elif [[ -f /etc/redhat-release ]]; then
-            $SUDF redhat-lsb
-        elif [[ -f /etc/arch-release ]]; then
-            $SUDA lsb-release
+# ==============================================================================
+# DETECTAR DISTRO
+# ==============================================================================
+detectar_distro() {
+    separador
+    log_info "Detectando distribuição..."
+    separador
+
+    # Tenta via /etc/os-release (mais universal que lsb_release)
+    if [[ -f /etc/os-release ]]; then
+        # shellcheck source=/dev/null
+        source /etc/os-release
+        DISTRO_ID="${ID:-}"
+        DISTRO_LIKE="${ID_LIKE:-}"
+    fi
+
+    # Fallback para lsb_release
+    if [[ -z "${DISTRO_ID:-}" ]] && command -v lsb_release >/dev/null 2>&1; then
+        DISTRO_ID="$(lsb_release -is | tr '[:upper:]' '[:lower:]')"
+    fi
+
+    if [[ -z "${DISTRO_ID:-}" ]]; then
+        log_err "Não foi possível detectar a distribuição."
+        exit 1
+    fi
+
+    log_ok "Distro: ${NEGRITO}${DISTRO_ID}${RESET} ${DISTRO_LIKE:+(like: ${DISTRO_LIKE})}"
+}
+
+# ==============================================================================
+# INSTALAR FONTE
+# ==============================================================================
+instalar_fonte() {
+    local cmd_install="$1"
+    local pacote="$2"
+
+    separador
+    log_info "Verificando fonte Noto Color Emoji..."
+    separador
+
+    if [[ -f "$FONT_PATH" ]]; then
+        log_skip "Fonte já instalada: $FONT_PATH"
+    elif [[ "$DRY_RUN" == "1" ]]; then
+        log_skip "[DRY-RUN] Instalaria: $pacote"
+    else
+        log_run "Instalando: $pacote ..."
+        if eval "$cmd_install $pacote" &>/dev/null; then
+            log_ok "Fonte instalada."
         else
-            echo -e "${VERM}[!] Sistema não suportado${NORM}"
+            log_err "Falha ao instalar a fonte."
             exit 1
         fi
-        echo -e "${VERD}[*] lsb_release instalado com sucesso!${NORM}"
     fi
 }
 
-# Funções de instalação
-instalar() {
-    local SU=$1 APP=$2
-    if [[ -f $FONT_PATH ]]; then
-        echo -e "${CIAN}[i] Fonte já instalada${NORM}"
-    else
-        echo -e "${CIAN}------ Instalando fonte ------${NORM}"
-        $SU $APP
-        echo -e "${VERD}[*] Fonte instalada com sucesso${NORM}"
-    fi
-    configurar_fontes
-}
-
-instalar_debian() { instalar "$SUDD" "$APPD"; }
-instalar_fedora() { instalar "$SUDF" "$APPF"; }
-instalar_arch()   { instalar "$SUDA" "$APPA"; }
-
-# Configuração de fontes
+# ==============================================================================
+# CONFIGURAR FONTCONFIG
+# ==============================================================================
 configurar_fontes() {
-    if [[ ! -f $CONFIG_PATH ]]; then
-        echo -e "\n${CIAN}------ Criando configuração ------${NORM}"
-        mkdir -p "$(dirname "$CONFIG_PATH")"
-        cat > "$CONFIG_PATH" <<EOF
+    separador
+    log_info "Verificando configuração de fontes..."
+    separador
+
+    if [[ -f "$CONFIG_PATH" ]]; then
+        log_skip "Configuração já existe: $CONFIG_PATH"
+        return
+    fi
+
+    if [[ "$DRY_RUN" == "1" ]]; then
+        log_skip "[DRY-RUN] Criação de $CONFIG_PATH simulada."
+        return
+    fi
+
+    log_run "Criando: $CONFIG_PATH ..."
+    mkdir -p "$(dirname "$CONFIG_PATH")"
+
+    cat > "$CONFIG_PATH" << 'XMLEOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
@@ -90,21 +161,53 @@ configurar_fontes() {
     </prefer>
   </alias>
 </fontconfig>
-EOF
-        fc-cache -f
-        echo -e "${VERD}[*] Configuração criada com sucesso${NORM}\n"
-    else
-        echo -e "${CIAN}[i] Configuração já existente.${NORM}\n"
-    fi
+XMLEOF
+
+    log_run "Atualizando cache de fontes (fc-cache)..."
+    fc-cache -f && log_ok "Cache atualizado." || log_warn "fc-cache retornou erro (não crítico)."
+    log_ok "Configuração criada: $CONFIG_PATH"
 }
 
-# Início
-clear
-verificar_lsb_release
-ID=$(lsb_release -is)
-case "$ID" in
-    Debian|Ubuntu|Pop) instalar_debian ;;
-    Fedora) instalar_fedora ;;
-    Arch) instalar_arch ;;
-    *) echo -e "${VERM}[!] Sistema não suportado${NORM}" ;;
+# ==============================================================================
+# MAIN
+# ==============================================================================
+detectar_distro
+
+case "${DISTRO_ID,,}" in
+    debian|ubuntu|pop|linuxmint|raspbian)
+        [[ "$DRY_RUN" != "1" ]] && sudo apt-get update -qq
+        instalar_fonte "sudo apt-get install -y" "fonts-noto-color-emoji"
+        ;;
+    fedora|rhel|centos)
+        instalar_fonte "sudo dnf install -y" "google-noto-emoji-color-fonts"
+        ;;
+    arch|manjaro|endeavouros)
+        instalar_fonte "sudo pacman -S --noconfirm --needed" "noto-fonts-emoji"
+        ;;
+    *)
+        # Tenta via ID_LIKE (ex: Ubuntu derivado que não é ubuntu no ID)
+        case "${DISTRO_LIKE,,}" in
+            *debian*|*ubuntu*)
+                [[ "$DRY_RUN" != "1" ]] && sudo apt-get update -qq
+                instalar_fonte "sudo apt-get install -y" "fonts-noto-color-emoji"
+                ;;
+            *fedora*|*rhel*)
+                instalar_fonte "sudo dnf install -y" "google-noto-emoji-color-fonts"
+                ;;
+            *arch*)
+                instalar_fonte "sudo pacman -S --noconfirm --needed" "noto-fonts-emoji"
+                ;;
+            *)
+                log_err "Distribuição não suportada: ${DISTRO_ID}"
+                exit 1
+                ;;
+        esac
+        ;;
 esac
+
+configurar_fontes
+
+echo ""
+separador
+log_ok "Fonte Noto Color Emoji configurada com sucesso!"
+separador
